@@ -47,7 +47,9 @@
       image = 'black_tablet.png',
     },
 },
+```
 
+---
 ### Steps to Install:
 1. Download the **avid-blacktablet** resource.
 2. Place the `avid-blacktablet` folder inside your server's `resources` directory.
