@@ -25,3 +25,10 @@ RegisterNetEvent('avid-blacktablet:openTablet')
 AddEventHandler('avid-blacktablet:openTablet', function()
     openBlackTablet()
 end)
+
+RegisterNetEvent('ox_inventory:useItem', function(item)
+    if item.name == 'black_tablet' then
+        TriggerEvent('avid-blacktablet:openBlackTablet') -- Opens the Black Tablet UI
+    end
+end)
+

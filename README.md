@@ -35,6 +35,19 @@
 
 ## Installation
 
+## Add Item to ox_inventory
+```lua
+['black_tablet'] = {
+    label = 'Black Tablet',
+    weight = 500,  -- Weight of the item (grams)
+    stack = false, -- This item cannot stack
+    close = true,  -- Closes inventory upon use
+    description = 'A tablet for accessing underground networks and managing gang activities.',
+    client = {
+      image = 'black_tablet.png',
+    },
+},
+
 ### Steps to Install:
 1. Download the **avid-blacktablet** resource.
 2. Place the `avid-blacktablet` folder inside your server's `resources` directory.
