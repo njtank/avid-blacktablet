@@ -61,3 +61,5 @@
 
 ## Events:
 TriggerEvent('avid-blacktablet:openBlackTablet')
+TriggerServerEvent("gang:heistCompleted", gangName) -- Adding gang rep for heist completion
+TriggerServerEvent("gang:memberArrested", gangName) -- Removing rep for gang member upon arrest

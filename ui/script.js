@@ -127,3 +127,21 @@ function fetchListings() {
 function getCryptoName() {
     return 'doge'; // Change dynamically if needed
 }
+
+function loadGangReputation() {
+    const content = document.getElementById('content');
+    content.innerHTML = '<h2>Gang Reputation</h2><div id="reputationDetails"></div>';
+    fetch(`https://${GetParentResourceName()}/gang:getReputation`, {
+        method: 'POST',
+    }).then((response) => response.json())
+      .then((reputationData) => {
+          const detailsDiv = document.getElementById('reputationDetails');
+          reputationData.forEach((gang) => {
+              detailsDiv.innerHTML += `<div>
+                  <h3>${gang.name}</h3>
+                  <p>Reputation: ${gang.reputation}</p>
+                  <p>Tier: ${gang.tier}</p>
+              </div>`;
+          });
+      });
+}
