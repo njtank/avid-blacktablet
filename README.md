@@ -61,3 +61,16 @@
 
 ## Events:
 TriggerEvent('avid-blacktablet:openBlackTablet')
+
+---
+Here's the corrected version:  
+
+## Future Updates:  
+- **Crypto Wallets** - The ability to hack other players' crypto wallets via a mini-game.  
+- **Police Database Access** - For a certain amount of crypto, a player may be able to attack the MDT service (PS-MDT) to shut down the system and/or remove their most recent crime.  
+- **Heist Planning App** - Ability to assign roles to gang members, set waypoints for planning, and purchase heist-specific items.  
+- **Territory War System** - Real-time updates of territory gained or lost, with benefits to owning more territory, such as increased crypto yield on heists.  
+- **Gang Reputation System** - Each gang earns or loses reputation based on activities like completing heists, winning battles, and performing high-profile crimes. The reputation could unlock perks such as exclusive black market items, increased member counts, or storage.  
+- **Custom HQ Upgrades** - Ability to add storage units, custom security (cameras, reinforced doors, etc.), and functional items like a crafting bench.  
+- **Communication Tools** - Encrypted messaging between gang members.  
+- **Document Forgery** - Create fake license plates and driver's licenses.  
