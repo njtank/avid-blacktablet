@@ -61,3 +61,14 @@
 
 ## Events:
 TriggerEvent('avid-blacktablet:openBlackTablet')
+TriggerServerEvent("gang:heistCompleted", gangName) -- Adding gang rep for heist completion
+TriggerServerEvent("gang:memberArrested", gangName) -- Removing rep for gang member upon arrest
+
+## Future Updates:  
+- **Crypto Wallets** - The ability to hack other players' crypto wallets via a mini-game.  
+- **Police Database Access** - For a certain amount of crypto, a player may be able to attack the MDT service (PS-MDT) to shut down the system and/or remove their most recent crime.  
+- **Heist Planning App** - Ability to assign roles to gang members, set waypoints for planning, and purchase heist-specific items.  
+- **Territory War System** - Real-time updates of territory gained or lost, with benefits to owning more territory, such as increased crypto yield on heists.    
+- **Custom HQ Upgrades** - Ability to add storage units, custom security (cameras, reinforced doors, etc.), and functional items like a crafting bench.  
+- **Communication Tools** - Encrypted messaging between gang members.  
+- **Document Forgery** - Create fake license plates and driver's licenses.  
