@@ -1,13 +1,22 @@
 fx_version 'cerulean'
 game 'gta5'
 
-ui_page 'tablet.html'
+author 'njtank'            
+resource_name 'black_tablet'  
+version '1.0.0'               
+
+ui_page 'ui/tablet.html'      
 
 files {
-    'tablet.html',
-    'tablet.css',
-    'tablet.js'
+    'ui/tablet.html',         -- Updated the path to UI folder
+    'ui/tablet.css',          -- Updated the path to UI folder
+    'ui/tablet.js'            -- Updated the path to UI folder
 }
 
-client_script 'client.lua'
-server_script 'server.lua'
+-- Client Scripts
+client_script 'client/client.lua'   -- Client script in the client folder
+client_script 'config.lua'          
+
+-- Server Scripts
+server_script 'server/server.lua'   -- Server script in the server folder
+server_script 'config.lua'          

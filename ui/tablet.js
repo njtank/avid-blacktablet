@@ -8,8 +8,11 @@ function openTab(tabName) {
 // Initialize by showing the Black Market tab
 document.addEventListener('DOMContentLoaded', () => openTab('market'));
 
+// Handle dynamic crypto name
+let cryptoName = 'doge';  // Default value
+
 function loadMarketItems() {
-    fetch('https://your_resource_name/getMarketItems', {
+    fetch('https://avid-blacktablet/getMarketItems', {
         method: 'POST'
     })
     .then(response => response.json())
@@ -22,7 +25,7 @@ function loadMarketItems() {
             itemElement.className = 'market-item';
             itemElement.innerHTML = `
                 <h3>${item.label}</h3>
-                <p>Price: ${item.price} Crypto</p>
+                <p>Price: ${item.price} ${cryptoName}</p>
                 <button onclick="purchaseItem('${item.id}')">Buy</button>
             `;
             marketItems.appendChild(itemElement);
@@ -35,7 +38,7 @@ function createGang() {
     const gangAbbreviation = document.getElementById('gang-abbreviation').value.toUpperCase();
     const gangColor = document.getElementById('gang-color').value;
 
-    fetch('https://your_resource_name/createGang', {
+    fetch('https://avid-blacktablet/createGang', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,7 +59,7 @@ function createGang() {
 }
 
 function upgradeSlots() {
-    fetch('https://your_resource_name/upgradeGangSlots', {
+    fetch('https://avid-blacktablet/upgradeGangSlots', {
         method: 'POST'
     })
     .then(response => response.json())
@@ -70,7 +73,7 @@ function upgradeSlots() {
 }
 
 function purchaseItem(itemId) {
-    fetch(`https://your_resource_name/purchaseItem`, {
+    fetch(`https://avid-blacktablet/purchaseItem`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ itemId })
@@ -86,18 +89,10 @@ function purchaseItem(itemId) {
     });
 }
 
-function displayGangMap() {
-    fetch('https://your_resource_name/getGangData', {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(data => {
-        data.forEach(gang => {
-            // Use a map library or GTA map API to place colored circles at headquarters locations
-            addMapMarker(gang.headquarters, gang.color, gang.abbreviation);
-        });
-    });
-}
-
-// Call this function to load items when Black Market tab opens
-document.addEventListener('DOMContentLoaded', () => loadMarketItems());
+// Listen for the crypto name from the server
+window.addEventListener('message', function(event) {
+    if (event.data.action === 'openTablet') {
+        cryptoName = event.data.cryptoName;  // Get crypto name from the server
+        loadMarketItems();  // Load items after setting crypto name
+    }
+});

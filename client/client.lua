@@ -1,7 +1,10 @@
 -- Function to open the tablet UI
 function openBlackTablet()
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'openTablet' })
+    SendNUIMessage({ 
+        action = 'openTablet',
+        cryptoName = Config.CryptoName -- Send the crypto name to the UI
+    })
 end
 
 -- Function to close the tablet UI
