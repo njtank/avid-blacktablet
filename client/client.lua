@@ -1,34 +1,47 @@
--- Function to open the tablet UI
-function openBlackTablet()
+-- Initialize the tablet UI
+RegisterCommand('openBlackTablet', function()
     SetNuiFocus(true, true)
-    SendNUIMessage({ 
-        action = 'openTablet',
-        cryptoName = Config.CryptoName -- Send the crypto name to the UI
-    })
-end
+    SendNUIMessage({ action = 'showTablet' })
+end, false)
 
--- Function to close the tablet UI
-function closeBlackTablet()
-    SetNuiFocus(false, false)
-    SendNUIMessage({ action = 'closeTablet' })
-end
-
--- NUI callback for closing the tablet from within the UI
 RegisterNUICallback('closeTablet', function(data, cb)
-    closeBlackTablet()
+    SetNuiFocus(false, false)
     cb('ok')
 end)
 
--- Example trigger for testing purposes (Optional)
--- This can be removed if you only want the functions to be called externally
-RegisterNetEvent('avid-blacktablet:openTablet')
-AddEventHandler('avid-blacktablet:openTablet', function()
-    openBlackTablet()
+-- Handle black market interactions
+RegisterNUICallback('blackMarket:browse', function(data, cb)
+    TriggerServerEvent('blackMarket:getListings')
+    cb('ok')
 end)
 
-RegisterNetEvent('ox_inventory:useItem', function(item)
-    if item.name == 'black_tablet' then
-        TriggerEvent('avid-blacktablet:openBlackTablet') -- Opens the Black Tablet UI
+RegisterNUICallback('blackMarket:create', function(data, cb)
+    -- Check if the player has the item in their inventory
+    local itemData = exports.ox_inventory:GetItem(data.item)
+    if itemData and itemData.count >= tonumber(data.quantity) then
+        TriggerServerEvent('blackMarket:createListing', data)
+        cb({ success = true, message = "Listing created successfully." })
+    else
+        cb({ success = false, message = "You don't have enough of this item." })
     end
 end)
 
+RegisterNUICallback('blackMarket:purchase', function(data, cb)
+    TriggerServerEvent('blackMarket:purchaseItem', data.listingId)
+    cb('ok')
+end)
+
+-- Update client with listings
+RegisterNetEvent('blackMarket:sendListings', function(listings)
+    SendNUIMessage({ action = 'updateListings', listings = listings })
+end)
+
+-- Handle crypto balance display
+RegisterNUICallback('crypto:getBalance', function(data, cb)
+    TriggerServerEvent('crypto:getBalance')
+    cb('ok')
+end)
+
+RegisterNetEvent('crypto:receiveBalance', function(balance)
+    SendNUIMessage({ action = 'updateBalance', balance = balance })
+end)

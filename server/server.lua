@@ -1,76 +1,56 @@
-local ox_inventory = exports.ox_inventory
+local blackMarketListings = {}
 
-RegisterNetEvent('avid-blacktablet:getMarketItems', function()
-    local source = source
-    local xPlayer = ox_inventory.GetPlayer(source)
-
-    MySQL.Async.fetchAll('SELECT * FROM black_market_listings', {}, function(results)
-        local items = {}
-        for _, row in ipairs(results) do
-            table.insert(items, {
-                id = row.id,
-                label = row.item_label,
-                price = row.item_price
-            })
-        end
-        TriggerClientEvent('avid-blacktablet:receiveMarketItems', source, items)
-    end)
+-- Get player's crypto balance
+RegisterNetEvent('crypto:getBalance', function()
+    local src = source
+    local balance = GetPlayerCryptoBalance(src)
+    TriggerClientEvent('crypto:receiveBalance', src, balance)
 end)
 
-RegisterNetEvent('avid-blacktablet:purchaseItem', function(itemId)
-    local source = source
-    local xPlayer = ox_inventory.GetPlayer(source)
-
-    MySQL.Async.fetchScalar('SELECT item_price, seller_id FROM black_market_listings WHERE id = @id', {
-        ['@id'] = itemId
-    }, function(itemPrice, sellerId)
-        if xPlayer[Config.CryptoName] >= itemPrice then  -- Use Config.CryptoName for the crypto
-            xPlayer.removeCrypto(itemPrice)
-            ox_inventory:AddItem(source, 'your_item_name', 1)
-            MySQL.Async.execute('DELETE FROM black_market_listings WHERE id = @id', { ['@id'] = itemId })
-        else
-            TriggerClientEvent('avid-blacktablet:notify', source, 'Not enough ' .. Config.CryptoName .. '!')
-        end
-    end)
+-- Handle black market listings
+RegisterNetEvent('blackMarket:getListings', function()
+    local src = source
+    TriggerClientEvent('blackMarket:sendListings', src, blackMarketListings)
 end)
 
-RegisterNetEvent('avid-blacktablet:createGang', function(data)
-    local source = source
-    local xPlayer = ox_inventory.GetPlayer(source)
+RegisterNetEvent('blackMarket:createListing', function(data)
+    local src = source
+    local playerIdentifier = GetPlayerIdentifier(src)
 
-    if xPlayer[Config.CryptoName] >= 500 then
-        xPlayer.removeCrypto(500)
-
-        local gangId = MySQL.Async.insert('INSERT INTO gangs (name, abbreviation, color, leader_id, headquarters_x, headquarters_y, headquarters_z, member_slots) VALUES (@name, @abbreviation, @color, @leader, @x, @y, @z, @member_slots)', {
-            ['@name'] = data.name,
-            ['@abbreviation'] = data.abbreviation,
-            ['@color'] = data.color,
-            ['@leader'] = xPlayer.identifier,
-            ['@x'] = data.x,
-            ['@y'] = data.y,
-            ['@z'] = data.z,
-            ['@member_slots'] = Config.StartingGangMembers  -- Use the starting member configuration
+    -- Validate item exists in the inventory and remove it
+    if exports.ox_inventory:RemoveItem(src, data.item, tonumber(data.quantity)) then
+        local listingId = #blackMarketListings + 1
+        table.insert(blackMarketListings, {
+            id = listingId,
+            seller = playerIdentifier,
+            item = data.item,
+            quantity = tonumber(data.quantity),
+            price = tonumber(data.price)
         })
-
-        TriggerClientEvent('avid-blacktablet:notify', source, 'Gang created successfully!')
+        TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Listing created!' } })
     else
-        TriggerClientEvent('avid-blacktablet:notify', source, 'Not enough ' .. Config.CryptoName .. '!')
+        TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Item could not be removed.' } })
     end
 end)
 
-RegisterNetEvent('avid-blacktablet:upgradeGangSlots', function()
-    local source = source
-    local xPlayer = ox_inventory.GetPlayer(source)
+RegisterNetEvent('blackMarket:purchaseItem', function(listingId)
+    local src = source
+    local listing = blackMarketListings[listingId]
 
-    if xPlayer[Config.CryptoName] >= 200 then
-        xPlayer.removeCrypto(200)
-
-        MySQL.Async.execute('UPDATE gangs SET member_slots = member_slots + 1 WHERE leader_id = @leader_id', {
-            ['@leader_id'] = xPlayer.identifier
-        })
-
-        TriggerClientEvent('avid-blacktablet:notify', source, 'Slot added successfully!')
+    if listing then
+        if RemovePlayerCrypto(src, listing.price) then
+            if exports.ox_inventory:AddItem(src, listing.item, listing.quantity) then
+                TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Purchase successful!' } })
+                blackMarketListings[listingId] = nil
+            else
+                -- Refund the crypto if item cannot be added
+                AddPlayerCrypto(src, listing.price)
+                TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Failed to add item to inventory. Crypto refunded.' } })
+            end
+        else
+            TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Insufficient funds.' } })
+        end
     else
-        TriggerClientEvent('avid-blacktablet:notify', source, 'Not enough ' .. Config.CryptoName .. '!')
+        TriggerClientEvent('chat:addMessage', src, { args = { 'Black Market', 'Listing not found.' } })
     end
 end)
