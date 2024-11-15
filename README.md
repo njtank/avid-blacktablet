@@ -60,9 +60,15 @@
 5. Restart server
 
 ## Events:
--TriggerEvent('avid-blacktablet:openBlackTablet')
--TriggerServerEvent("gang:heistCompleted", gangName) -- Adding gang rep for heist completion
--TriggerServerEvent("gang:memberArrested", gangName) -- Removing rep for gang member upon arrest
+``` Open Black Tablet
+TriggerEvent('avid-blacktablet:openBlackTablet')
+```
+``` Adding gang rep for heist completion
+TriggerServerEvent("gang:heistCompleted", gangName)
+```
+``` Removing rep for gang member upon arrest
+TriggerServerEvent("gang:memberArrested", gangName)
+```
 
 ## Future Updates:  
 - **Crypto Wallets** - The ability to hack other players' crypto wallets via a mini-game.  
