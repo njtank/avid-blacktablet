@@ -1,3 +1,5 @@
+![Avid_RP_No_Text-removebg-preview](https://github.com/user-attachments/assets/994e90fc-d826-47b0-a499-a3a7bec6a54c)
+
 # Avid BlackTablet
 
 **Avid BlackTablet** is a custom resource for FiveM that introduces a tablet interface for in-game criminal activities. This tablet serves as a hub for managing black market purchases, gang creation and management, and more. All transactions are made using cryptocurrency, and users can create and upgrade gangs, set headquarters, and manage their members.
