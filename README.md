@@ -28,6 +28,10 @@
   - Clean, modern, and user-friendly interface that mimics a tablet-like experience.
 
 ---
+## Dependicies 
+- ox_inventory (https://github.com/overextended/ox_inventory)
+- oxmysql (https://github.com/overextended/oxmysql)
+
 
 ## Installation
 
@@ -37,6 +41,8 @@
 3. In your `server.cfg` file, add the following line:
    ```bash
    ensure avid-blacktablet
+4. Install SQL file 
+5. Restart server
 
 ## Events:
 TriggerEvent('avid-blacktablet:openBlackTablet')
