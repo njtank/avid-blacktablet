@@ -1,9 +1,24 @@
-RegisterCommand('openBlackTablet', function()
+-- Function to open the tablet UI
+function openBlackTablet()
     SetNuiFocus(true, true)
     SendNUIMessage({ action = 'openTablet' })
-end, false)
+end
 
-RegisterNUICallback('closeTablet', function(data, cb)
+-- Function to close the tablet UI
+function closeBlackTablet()
     SetNuiFocus(false, false)
+    SendNUIMessage({ action = 'closeTablet' })
+end
+
+-- NUI callback for closing the tablet from within the UI
+RegisterNUICallback('closeTablet', function(data, cb)
+    closeBlackTablet()
     cb('ok')
+end)
+
+-- Example trigger for testing purposes (Optional)
+-- This can be removed if you only want the functions to be called externally
+RegisterNetEvent('avid-blacktablet:openTablet')
+AddEventHandler('avid-blacktablet:openTablet', function()
+    openBlackTablet()
 end)
