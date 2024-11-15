@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criminal Tablet</title>
+    <link rel="stylesheet" href="tablet.css">
+</head>
+<body>
+    <div id="tablet-container">
+        <nav class="tab-nav">
+            <button class="tab-btn" onclick="openTab('market')">Black Market</button>
+            <button class="tab-btn" onclick="openTab('gang')">Gang Management</button>
+            <button class="tab-btn" onclick="openTab('map')">Map</button>
+        </nav>
+        
+        <div id="market" class="tab-content">
+            <h2>Black Market</h2>
+            <div id="market-items">
+                <!-- Black Market items will be displayed here -->
+            </div>
+        </div>
+
+        <div id="gang" class="tab-content">
+            <h2>Gang Management</h2>
+            <div id="gang-creation">
+                <input type="text" id="gang-name" placeholder="Gang Name">
+                <input type="text" id="gang-abbreviation" placeholder="Abbreviation (3 letters)">
+                <input type="color" id="gang-color" value="#ff0000">
+                <button onclick="createGang()">Create Gang (Cost: 500 Crypto)</button>
+            </div>
+            
+            <div id="gang-upgrades" style="display: none;">
+                <p>Upgrade Member Slots</p>
+                <button onclick="upgradeSlots()">Add Slot (Cost: 200 Crypto)</button>
+            </div>
+        </div>
+
+        <div id="map" class="tab-content">
+            <h2>Gang Map</h2>
+            <div id="map-canvas">
+                <!-- Gang headquarters map will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="tablet.js"></script>
+</body>
+</html>
