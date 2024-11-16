@@ -1,47 +1,30 @@
--- Initialize the tablet UI
+local QBCore = exports['qb-core']:GetCoreObject()
+
+-- Open the tablet UI
 RegisterCommand('openBlackTablet', function()
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'showTablet' })
-end, false)
+    SendNUIMessage({ action = "open" })
+end)
 
-RegisterNUICallback('closeTablet', function(data, cb)
+-- Close the tablet UI
+RegisterNUICallback('closeTablet', function()
     SetNuiFocus(false, false)
-    cb('ok')
 end)
 
--- Handle black market interactions
-RegisterNUICallback('blackMarket:browse', function(data, cb)
-    TriggerServerEvent('blackMarket:getListings')
-    cb('ok')
+-- Update crypto balance
+RegisterNetEvent('avid-blacktablet:updateCryptoBalance')
+AddEventHandler('avid-blacktablet:updateCryptoBalance', function(balance)
+    SendNUIMessage({
+        action = "updateCryptoBalance",
+        balance = balance
+    })
 end)
 
-RegisterNUICallback('blackMarket:create', function(data, cb)
-    -- Check if the player has the item in their inventory
-    local itemData = exports.ox_inventory:GetItem(data.item)
-    if itemData and itemData.count >= tonumber(data.quantity) then
-        TriggerServerEvent('blackMarket:createListing', data)
-        cb({ success = true, message = "Listing created successfully." })
-    else
-        cb({ success = false, message = "You don't have enough of this item." })
-    end
-end)
-
-RegisterNUICallback('blackMarket:purchase', function(data, cb)
-    TriggerServerEvent('blackMarket:purchaseItem', data.listingId)
-    cb('ok')
-end)
-
--- Update client with listings
-RegisterNetEvent('blackMarket:sendListings', function(listings)
-    SendNUIMessage({ action = 'updateListings', listings = listings })
-end)
-
--- Handle crypto balance display
-RegisterNUICallback('crypto:getBalance', function(data, cb)
-    TriggerServerEvent('crypto:getBalance')
-    cb('ok')
-end)
-
-RegisterNetEvent('crypto:receiveBalance', function(balance)
-    SendNUIMessage({ action = 'updateBalance', balance = balance })
+-- Update market items
+RegisterNetEvent('avid-blacktablet:updateMarketItems')
+AddEventHandler('avid-blacktablet:updateMarketItems', function(items)
+    SendNUIMessage({
+        action = "updateMarketItems",
+        items = items
+    })
 end)

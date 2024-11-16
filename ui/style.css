@@ -1,134 +1,81 @@
-/* General Styling */
 body {
-    background-color: #000;
+    background-color: #222;
+    font-family: Arial, sans-serif;
     color: #66d9e8;
-    font-family: Garamond, serif;
-    margin: 0;
-    overflow: hidden;
 }
 
-/* Tablet container */
 #tablet {
+    width: 400px;
+    height: 600px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 70%;
-    height: 90%;
-    border: 3px solid #66d9e8; /* Tablet border */
-    border-radius: 15px;
-    background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+}
+
+.header {
+    background-color: #111;
     padding: 10px;
+    text-align: right;
 }
 
-/* Back button */
-.back-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 5px 15px;
-    border: 2px solid #66d9e8; /* Button border */
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
+.header button {
     background: transparent;
+    border: none;
     color: #66d9e8;
-    font-size: 16px;
-    transition: background 0.2s, color 0.2s;
+    font-size: 20px;
 }
 
-.back-button:hover {
-    background: #66d9e8;
-    color: #000;
-}
-
-/* Header styling */
-#header {
-    text-align: center;
-    padding: 10px 0;
-    border-bottom: 2px solid #66d9e8; /* Header underline */
-}
-
-#header h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-/* Content area */
-#content {
+.content {
+    padding: 20px;
     flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Menu and interactive buttons */
-.menu {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.button {
-    padding: 10px 20px;
-    border: 2px solid #66d9e8; /* Button border */
-    border-radius: 5px;
-    background: transparent;
-    color: #66d9e8;
-    cursor: pointer;
-    font-size: 18px;
-    text-align: center;
-    transition: background 0.2s, color 0.2s;
+.crypto, .market {
+    display: flex;
+    flex-direction: column;
 }
 
-.button:hover {
-    background: #66d9e8;
-    color: #000;
+.market-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
-/* Form input styling */
-form input[type="text"],
-form input[type="number"] {
-    width: 100%;
+.market-item {
+    background-color: #444;
     padding: 10px;
-    border: 2px solid #66d9e8; /* Input border */
+    text-align: center;
     border-radius: 5px;
-    background: transparent;
-    color: #66d9e8;
-    font-size: 16px;
-    margin-bottom: 10px;
 }
 
-form input[type="text"]:focus,
-form input[type="number"]:focus {
-    outline: none;
-    border-color: #00c8ff;
-}
-
-/* Form labels */
-form label {
-    margin-bottom: 5px;
-    display: block;
-    font-size: 14px;
-    color: #66d9e8;
-}
-
-/* Form submit button */
-form button[type="submit"] {
-    padding: 10px 20px;
-    border: 2px solid #66d9e8; /* Button border */
-    border-radius: 5px;
-    background: transparent;
-    color: #66d9e8;
-    font-size: 16px;
+.buy-btn {
+    background-color: #66d9e8;
+    border: none;
+    padding: 5px;
+    color: #222;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
 }
 
-form button[type="submit"]:hover {
-    background: #66d9e8;
-    color: #000;
+#transfer-btn {
+    background-color: #66d9e8;
+    border: none;
+    padding: 10px;
+    color: #222;
+    cursor: pointer;
+}
+
+#close-tablet-btn {
+    background: transparent;
+    border: none;
+    color: #66d9e8;
+    font-size: 25px;
 }

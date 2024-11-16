@@ -1,22 +1,24 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'njtank'            
-resource_name 'black_tablet'  
-version '1.0.0'               
+author 'njtank'
+description 'Avid Black Tablet'
+version '1.0.0'
 
-ui_page 'ui/tablet.html'      
-
-files {
-    'ui/tablet.html',         -- Updated the path to UI folder
-    'ui/tablet.css',          -- Updated the path to UI folder
-    'ui/tablet.js'            -- Updated the path to UI folder
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/server.lua'
 }
 
--- Client Scripts
-client_script 'client/client.lua'   -- Client script in the client folder
-client_script 'config.lua'          
+client_scripts {
+    'client/client.lua',
+    'client/script.js'
+}
 
--- Server Scripts
-server_script 'server/server.lua'   -- Server script in the server folder
-server_script 'config.lua'          
+ui_page 'ui/index.html'
+
+files {
+    'ui/index.html',
+    'ui/style.css',
+    'ui/script.js'
+}

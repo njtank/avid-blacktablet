@@ -1,147 +1,118 @@
-let currentPage = 'home';
-let historyStack = [];
+document.addEventListener("DOMContentLoaded", () => {
+    const closeBtn = document.getElementById("close-tablet-btn");
+    const marketGrid = document.querySelector(".market-grid");
+    const cryptoBalanceSpan = document.getElementById("crypto-balance");
 
-/**
- * Go back to the previous page.
- */
-function goBack() {
-    if (historyStack.length > 0) {
-        currentPage = historyStack.pop();
-        loadPage(currentPage, false);
+    const transferBtn = document.getElementById("transfer-btn");
+    const transferAmountInput = document.getElementById("transfer-amount");
+    const transferIdInput = document.getElementById("transfer-id");
+
+    // Close tablet event
+    closeBtn.addEventListener("click", () => {
+        fetch('https://avid-blacktablet/closeTablet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    });
+
+    // Handle Transfer Crypto
+    transferBtn.addEventListener("click", () => {
+        const amount = transferAmountInput.value;
+        const playerId = transferIdInput.value;
+
+        if (amount && playerId) {
+            fetch('https://avid-blacktablet/transferCrypto', {
+                method: 'POST',
+                body: JSON.stringify({
+                    amount: amount,
+                    playerId: playerId
+                }),
+                headers: { 'Content-Type': 'application/json' },
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    alert("Crypto transferred successfully!");
+                    updateCryptoBalance(data.newBalance);
+                } else {
+                    alert("Error transferring crypto.");
+                }
+            });
+        }
+    });
+
+    // Update market items in the grid
+    function updateMarketItems(items) {
+        marketGrid.innerHTML = '';  // Clear the market grid
+
+        items.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.classList.add('market-item');
+            itemElement.innerHTML = `
+                <img class="item-image" src="${item.image || 'default.png'}" alt="${item.name}" />
+                <div class="item-name">${item.name}</div>
+                <div class="item-price">${item.price} Doge</div>
+                <button class="buy-btn">Buy</button>
+            `;
+
+            // Add event listener to the buy button
+            itemElement.querySelector('.buy-btn').addEventListener('click', () => {
+                buyItem(item.id);
+            });
+
+            marketGrid.appendChild(itemElement);
+        });
     }
-}
 
-/**
- * Load a new page into the tablet.
- * @param {string} page - The page to load.
- * @param {boolean} addToHistory - Whether to add this page to the history stack.
- */
-function loadPage(page, addToHistory = true) {
-    if (addToHistory) historyStack.push(currentPage);
-    currentPage = page;
-
-    const content = document.getElementById('content');
-    content.innerHTML = ''; // Clear existing content
-
-    switch (page) {
-        case 'blackMarket':
-            content.innerHTML = `<h2>Black Market</h2>
-                <p>Explore and create listings of exclusive items.</p>
-                <button class="button" onclick="loadPage('createListing')">Create Listing</button>
-                <button class="button" onclick="loadPage('browseListings')">Browse Listings</button>`;
-            break;
-        case 'createListing':
-            content.innerHTML = `<h2>Create Listing</h2>
-                <form onsubmit="submitListing(event)">
-                    <label for="item">Item:</label><br>
-                    <input type="text" id="item" name="item"><br>
-                    <label for="quantity">Quantity:</label><br>
-                    <input type="number" id="quantity" name="quantity" min="1"><br>
-                    <label for="price">Price (${getCryptoName()}):</label><br>
-                    <input type="number" id="price" name="price" min="1"><br>
-                    <button type="submit" class="button">Submit</button>
-                </form>`;
-            break;
-        case 'browseListings':
-            content.innerHTML = `<h2>Browse Listings</h2>
-                <p>Loading listings...</p>`;
-            fetchListings();
-            break;
-        case 'cryptoWallet':
-            content.innerHTML = `<h2>Crypto Wallet</h2>
-                <p>Your balance: <span id="cryptoBalance">Loading...</span> ${getCryptoName()}</p>`;
-            fetchCryptoBalance();
-            break;
-        case 'gangManagement':
-            content.innerHTML = `<h2>Gang Management</h2>
-                <p>Manage your gang, recruit members, and upgrade slots.</p>`;
-            break;
-        case 'territories':
-            content.innerHTML = `<h2>Territories</h2>
-                <p>View your gang's territory on the map.</p>`;
-            break;
-        default:
-            content.innerHTML = `<h2>Home</h2>`;
+    // Trigger purchase item event
+    function buyItem(itemId) {
+        fetch('https://avid-blacktablet/buyItem', {
+            method: 'POST',
+            body: JSON.stringify({ itemId: itemId }),
+            headers: { 'Content-Type': 'application/json' },
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                alert("Item purchased successfully!");
+            } else {
+                alert("Not enough crypto to buy this item.");
+            }
+        });
     }
-}
 
-/**
- * Submit a new listing to the black market.
- */
-function submitListing(event) {
-    event.preventDefault();
+    // Listen for incoming messages from Lua (via NUI callback)
+    window.addEventListener("message", function(event) {
+        const data = event.data;
 
-    const item = document.getElementById('item').value;
-    const quantity = parseInt(document.getElementById('quantity').value);
-    const price = parseInt(document.getElementById('price').value);
+        switch (data.action) {
+            case "open":
+                document.getElementById('tablet').style.display = "block";
+                break;
+            case "close":
+                document.getElementById('tablet').style.display = "none";
+                break;
+            case "updateCryptoBalance":
+                updateCryptoBalance(data.balance);
+                break;
+            case "updateMarketItems":
+                updateMarketItems(data.items);
+                break;
+        }
+    });
 
-    fetch(`https://${GetParentResourceName()}/blackMarket:create`, {
-        method: 'POST',
-        body: JSON.stringify({ item, quantity, price }),
-    }).then((response) => response.json())
-      .then((data) => {
-          if (data.success) {
-              alert('Listing created successfully!');
-              goBack();
-          } else {
-              alert(`Error: ${data.message}`);
-          }
-      });
-}
+    // Function to update the user's crypto balance
+    function updateCryptoBalance(newBalance) {
+        cryptoBalanceSpan.textContent = newBalance;
+    }
 
-/**
- * Fetch and display the crypto balance.
- */
-function fetchCryptoBalance() {
-    fetch(`https://${GetParentResourceName()}/crypto:getBalance`, {
-        method: 'POST',
-    }).then((response) => response.json())
-      .then((data) => {
-          document.getElementById('cryptoBalance').innerText = data.balance;
-      });
-}
-
-/**
- * Fetch and display listings from the black market.
- */
-function fetchListings() {
-    fetch(`https://${GetParentResourceName()}/blackMarket:browse`, {
-        method: 'POST',
-    }).then((response) => response.json())
-      .then((listings) => {
-          const content = document.getElementById('content');
-          content.innerHTML = '<h2>Browse Listings</h2>';
-          listings.forEach((listing) => {
-              const listingDiv = document.createElement('div');
-              listingDiv.innerHTML = `<p>${listing.item} x${listing.quantity} - ${listing.price} ${getCryptoName()}</p>
-                                       <button class="button" onclick="purchaseItem(${listing.id})">Buy</button>`;
-              content.appendChild(listingDiv);
-          });
-      });
-}
-
-/**
- * Get the configured cryptocurrency name.
- * @returns {string}
- */
-function getCryptoName() {
-    return 'doge'; // Change dynamically if needed
-}
-
-function loadGangReputation() {
-    const content = document.getElementById('content');
-    content.innerHTML = '<h2>Gang Reputation</h2><div id="reputationDetails"></div>';
-    fetch(`https://${GetParentResourceName()}/gang:getReputation`, {
-        method: 'POST',
-    }).then((response) => response.json())
-      .then((reputationData) => {
-          const detailsDiv = document.getElementById('reputationDetails');
-          reputationData.forEach((gang) => {
-              detailsDiv.innerHTML += `<div>
-                  <h3>${gang.name}</h3>
-                  <p>Reputation: ${gang.reputation}</p>
-                  <p>Tier: ${gang.tier}</p>
-              </div>`;
-          });
-      });
-}
+    // Fetch market items when the tablet is opened
+    fetch('https://avid-blacktablet/getMarketItems', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    }).then(response => response.json()).then(data => {
+        if (data.success) {
+            updateMarketItems(data.items);
+        } else {
+            alert('No market items found.');
+        }
+    });
+});
