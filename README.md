@@ -1,3 +1,6 @@
+** WIP, use at your own risk, because well, it doesnt work **
+
+
 ![Avid_RP_No_Text-removebg-preview](https://github.com/user-attachments/assets/994e90fc-d826-47b0-a499-a3a7bec6a54c)
 
 # Avid BlackTablet
